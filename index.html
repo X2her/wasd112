@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monaco Editor - Smooth UI and Typing</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #1E1E1E;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.js"></script>
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' } });
+        require(['vs/editor/editor.main'], function() {
+            // ลงทะเบียน Lua
+            monaco.languages.register({ id: 'lua' });
+
+            // สร้างธีมที่ใช้งาน
+            monaco.editor.defineTheme('blue-spectrum', {
+                base: 'vs-dark',
+                inherit: true,
+                rules: [
+                    { token: 'keyword', foreground: '00BFFF', fontStyle: 'bold' },
+                    { token: 'identifier', foreground: '1E90FF' },
+                    { token: 'string', foreground: '5F9EA0' },
+                    { token: 'number', foreground: '4682B4' },
+                    { token: 'comment', foreground: '87CEEB', fontStyle: 'italic' },
+                    { token: 'boolean', foreground: '008B8B', fontStyle: 'bold' },
+                    { token: 'function', foreground: '4169E1', fontStyle: 'bold' },
+                    { token: 'operator', foreground: '00CED1' },
+                    { token: 'variable', foreground: '007FFF' },
+                    { token: 'constant', foreground: '6A5ACD' },
+                    { token: 'delimiter', foreground: '48D1CC' },
+                    { token: 'namespace', foreground: '6495ED' },
+                    { token: 'type', foreground: '00FFFF' },
+                    { token: 'parameter', foreground: '20B2AA' },
+                    { token: 'property', foreground: '4682B4' },
+                ],
+                colors: {
+                    'editor.foreground': '#B0C4DE',
+                    'editor.background': '#1E1E1E',
+                    'editorCursor.foreground': '#00FFFF',
+                    'editor.lineHighlightBackground': '#333333',
+                    'editor.selectionBackground': '#4682B4',
+                    'editor.selectionHighlightBackground': '#5F9EA0',
+                }
+            });
+
+            // ใช้ custom theme
+            monaco.editor.setTheme('blue-spectrum');
+
+            // สร้าง Monaco Editor และตั้งค่าการพิมพ์สมูธ
+            var editor = monaco.editor.create(document.getElementById('container'), {
+                value: `-- Lua Example Code
+-- This is a comment
+local function myFunction(param)
+    local number = 42
+    local text = "Hello, World!"
+    local isAwesome = true
+    print(text)
+    return number
+end
+
+myFunction("test")`,
+                language: 'lua',
+                theme: 'blue-spectrum',
+                scrollbar: {
+                    vertical: 'auto',
+                    horizontal: 'auto',
+                },
+                minimap: {
+                    enabled: true,
+                    side: 'right',
+                },
+                lineNumbers: "on",
+                renderLineHighlight: "gutter",
+                wordWrap: "on",
+                suggest: {
+                    autoAcceptSuggest: true,
+                    filterGraceful: true
+                },
+                fontLigatures: true, // ใช้ฟอนต์ลิการ์ตเตอร์ (ช่วยให้การพิมพ์สมูธขึ้น)
+                quickSuggestions: true, // เปิดใช้งานคำแนะนำที่รวดเร็ว
+                smoothScrolling: true, // เปิดใช้งานการเลื่อนแบบสมูธ
+                cursorSmoothCaretAnimation: true, // เคอร์เซอร์เคลื่อนที่ได้สมูธ
+                renderWhitespace: "boundary", // แสดงช่องว่างระหว่างคำให้ชัดเจน
+                fontSize: 16, // ขนาดฟอนต์ที่เหมาะสม
+                tabSize: 4, // ขนาดของการกด Tab
+                fontFamily: '"Courier New", monospace', // ใช้ฟอนต์ที่ช่วยให้การพิมพ์สมูธ
+                automaticLayout: true, // ให้ editor ปรับขนาดอัตโนมัติ
+                smoothCaretAnimation: true, // เคอร์เซอร์เคลื่อนที่ได้สมูธ
+            });
+
+            // ฟังก์ชันให้ editor ปรับขนาดอัตโนมัติ
+            function resizeEditor() {
+                editor.layout();
+            }
+
+            window.addEventListener('resize', resizeEditor);
+            resizeEditor();
+        });
+    </script>
+</body>
+</html>
